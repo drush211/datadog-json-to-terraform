@@ -1,5 +1,10 @@
 all: clean lint unit-test image
 
+MAJOR_VERSION := 1
+MINOR_VERSION := 0
+BUILD_VERSION ?= $(USER)
+VERSION := $(MAJOR_VERSION).$(MINOR_VERSION).$(BUILD_VERSION)
+
 DATADOG_TO_TERRAFORM_PACKAGE_IMAGE_NAME := datadog-to-terraform-package
 DATADOG_TO_TERRAFORM_TEST_IMAGE_NAME := datadog-to-terraform-test
 DATADOG_TO_TERRAFORM_IMAGE_NAME := datadog-to-terraform
@@ -66,6 +71,14 @@ monitor-to-tf: image
 	@docker run \
 		--rm \
 		${DATADOG_TO_TERRAFORM_IMAGE_NAME} monitor "`cat ${JSON_FILE}`" > ${OUTPUT_FILE}
+
+# Release
+
+release: image
+	@docker login --username=drush211
+	@docker tag ${DATADOG_TO_TERRAFORM_IMAGE_NAME} drush211/${DATADOG_TO_TERRAFORM_IMAGE_NAME}:${VERSION}
+	@docker tag ${DATADOG_TO_TERRAFORM_IMAGE_NAME} drush211/${DATADOG_TO_TERRAFORM_IMAGE_NAME}:latest
+	@docker push drush211/${DATADOG_TO_TERRAFORM_IMAGE_NAME}
 
 # Clean Up
 
