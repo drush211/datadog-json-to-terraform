@@ -1,0 +1,10 @@
+FROM python:3.6
+
+RUN pip install pylint
+
+WORKDIR /workspace
+
+COPY src/.pylintrc /workspace
+COPY src/main/scripts /workspace
+COPY src/test/python /workspace
+COPY src/main/python /workspace
